@@ -42,24 +42,33 @@ def get_bmatrix(d,t):
 
 
 def main():
-    r = dict()
-
+    numpy.set_printoptions(threshold='nan')
+    r = dict()  #diccionario de tokens con lista de tags.
+#Leemos el corpus de documentos y agregamos al diccionario.
     arch = open('corpus_formateado2.txt', 'r')
     for line in arch:
         if line != "":
             jt =json.loads(json.dumps(eval(line)))
             parse_document(jt,r)
     arch.close()
+#
 
-
+# imprimimos diccionario
     for key, values in r.items():
         print key, values
     print '\n'
-
+#
+# Obtenemos una lista de tags
     t = get_tags(r)
     print 'tags: ', t
-    pass
+#
+#Obtenemos matriz B.
+    bm = get_bmatrix(r,t)
 
+    print bm
+
+
+    pass
 
 if __name__ == "__main__":
     main()
