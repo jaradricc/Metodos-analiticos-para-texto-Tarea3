@@ -9,3 +9,14 @@ jt = json.loads(json.dumps([{"token":"Buda_Gautama_De_Wikipedia","tag":"NP"},{"t
 ```
 Con ésto, generamos una lista de diccionarios.
 4. Para eliminar las líneas en blanco, ejecutamos en bash : sed '/^$/d' corpus_formateado.txt > corpus_formateado2.txt
+
+# v2.0:
+# Viterbi algorithm
+* Smoothing added to avoid probabilities equal to zero (lambda = 1 used for facilities).
+* There was implemented a method called viterbi which requires:
+    * A matrix
+    * B matrix
+    * Pi array with probabilities of tags to be initial.
+    * array of tags available (ordered according with matrices)
+    * array of tokens available (ordered according with matrices)
+    * a string with the chain of words to tag.
