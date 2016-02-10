@@ -33,19 +33,23 @@ def get_tags(d):
     return t
 
 def get_bmatrix(d,t):   #Recibe un diccionario de tokens con lista de tags de cada token y un set de tags disponibles
-    bm = numpy.zeros((len(d),len(t)))  #Inicializamos una matriz de tamaño (#tokens, #tags)
+    bm = numpy.ones((len(d),len(t)))  #Inicializamos una matriz de tamaño (#tokens, #tags)
     for i, ii in zip(d.items(), bm):
         tot = float(len(i[1]))   #Número total de veces que aparece el token i[0]
         for tag in i[1]:
-            ii[t.index(tag)] += 1/tot            # ii es el renglón a editar de la matriz bm, el indice al que debemos sumar corresponde  la posicion en la lista de tags (t)
+            ii[t.index(tag)] += tot            # ii es el renglón a editar de la matriz bm, el indice al que debemos sumar corresponde  la posicion en la lista de tags (t)
+    for i in range(len(bm)):
+        aux = sum(bm[i])
+        bm[i] = bm[i] / aux
     return bm
 
 
 
-numpy.set_printoptions(threshold='nan')
+numpy.set_printoptions(threshold='nan')  #Esto es para que imprima completa la matriz ( o arreglos de numpy )
 r = dict()  #diccionario de tokens con lista de tags.
 
 #Leemos el corpus de documentos y agregamos al diccionario.
+
 arch = open('corpus_formateado2.txt', 'r')
 for line in arch:
     if line != "":
@@ -70,8 +74,8 @@ bm = get_bmatrix(r,t)
 print '\nMatriz B:\n', bm
 #
 # generamos la matriz A y el arreglo de tags iniciales
-iniciales = numpy.zeros(len(t))
-am = numpy.zeros((len(t), len(t)))
+iniciales = numpy.ones(len(t))
+am = numpy.ones((len(t), len(t)))
 arch = open('corpus_formateado2.txt', 'r')
 for line in arch:
     if line != "":
