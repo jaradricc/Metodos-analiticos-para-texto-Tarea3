@@ -45,6 +45,41 @@ def get_bmatrix(d,t):   #Recibe un diccionario de tokens con lista de tags de ca
 
 
 
+def viterbi(am, bm, iniciales, tags, tokens, str):
+    r = list()      # Lista para el resultado final, se agrgarán los índices de los tags que corresponden (en orden de las palabras de str)
+    e = str.split()    # Partimos la frase completa en palabras (lista de palabras)
+    # extraemos la primer palabra (que se trata siempre diferente porque se evalúa en iniciales)
+    w = e.pop(0)
+    iw = tokens.index(w)   # extraemos el índice que corresponde al token evaluado
+    m = 0.0  #Variable para guardar la probabilidad máxima
+    mi = 0   # Variable para guardar el índice del arreglo que maximiza la probabilidad
+    p = 0.0   # variable auxiliar
+    for i in range(len(tags)):
+        p = iniciales[i] * bm[iw][i]  # P(palabra sea el tag[i]) * P(tag[i] sea inicial)
+        if p > m :
+            mi = i
+            m = p
+    r.append(mi)
+    #
+
+    # De aqui en adelante, se puede iterar, pues ya tratamos con la primer palabra y ahora tenemos un "tag anterior" en la cadena.
+    while len(e) > 0 :
+        w = e.pop(0)
+        iw = tokens.index(w)
+        m = 0.0
+        mi = 0
+        p = 0.0
+        for i in range(len(tags)) :
+            p = bm[iw][i] * am[i][r[-1]]  # P(palabra sea el tag[i]) * P(sea el tag dado el tag anterior(que es el último elemento de la lista r))
+            if p > m :
+                mi = i
+                m = p
+        r.append(mi)
+    #
+    return r
+
+
+
 numpy.set_printoptions(threshold='nan')  #Esto es para que imprima completa la matriz ( o arreglos de numpy )
 r = dict()  #diccionario de tokens con lista de tags.
 
@@ -94,3 +129,17 @@ iniciales = iniciales / sum(iniciales)
 #imprimimos la matriz A y los iniciales:
 print '\nMatriz A:\n', am
 print '\nIniciales:\n', iniciales
+
+##generamos una lista con las palabras o tokens disponibles.
+tok = r.keys()
+
+
+# Para probar viterbi
+#
+test = str()
+for elem in jt :
+    test += " " + elem.get('token')
+
+testres = viterbi(am, bm, iniciales, t, tok, test)
+for w,tag in zip(test.split(), testres):
+    print 'token: ', w, ' tag: ', t[tag]
